@@ -15,7 +15,7 @@ module Ckeditor
     end
 
     def ckeditor?
-      !params[:CKEditor].blank?
+      !(params[:CKEditor].blank? && params[:ck_editor].blank?)
     end
 
     def file
@@ -28,9 +28,10 @@ module Ckeditor
           json: { "uploaded" => 1, "fileName" => asset.filename, "url" => asset.url }.to_json
         }
       elsif ckeditor?
+        ckeditor_func_num = params[:CKEditorFuncNum] || params[:ck_editor_func_num]
         {
           text: %Q"<script type='text/javascript'>
-            window.parent.CKEDITOR.tools.callFunction(#{params[:CKEditorFuncNum]}, '#{asset_url(relative_url_root)}');
+            window.parent.CKEDITOR.tools.callFunction(#{ckeditor_func_num}, '#{asset_url(relative_url_root)}');
           </script>"
         }
       else
